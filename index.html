@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ledger CRM dashboard for managing sales leads, follow-ups, and revenue performance.">
+    <meta name="theme-color" content="#0B0A08">
+    <title>Ledger — CRM Dashboard</title>
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="search" role="search">
+          <span class="search-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l5 5"></path></svg>
+          </span>
+          <input type="text" id="globalSearch" placeholder="Search leads…" aria-label="Search">
+        </div>
+        <div class="header-actions">
+          <div class="notif-wrap">
+            <button class="notif-btn" id="notifBtn" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+              <span class="header-icon"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span>
+              <span class="notif-badge" id="notifBadge">3</span>
+            </button>
+            <div class="notif-panel" id="notifPanel">
+              <div class="notif-panel-head"><h3>Notifications</h3><button type="button" id="markAllRead">Mark all read</button></div>
+              <div class="notif-list" id="notifList">
+                <div class="notif-item unread" tabindex="0" role="button">
+                  <span class="notif-dot"></span><span class="notif-icon">🔥</span>
+                  <div class="notif-body"><div class="notif-title">New hot lead: Zainab Sheikh</div><div class="notif-time">15 minutes ago</div>
+                    <div class="notif-detail" hidden>Horizon Retail was marked Hot after a strong discovery call — ready to close.</div></div>
+                </div>
+                <div class="notif-item unread" tabindex="0" role="button">
+                  <span class="notif-dot"></span><span class="notif-icon">✅</span>
+                  <div class="notif-body"><div class="notif-title">Deal closed: PixelForge</div><div class="notif-time">1 hour ago</div>
+                    <div class="notif-detail" hidden>Hina Malik's deal moved to Closed Won, worth $5,100 in new revenue.</div></div>
+                </div>
+                <div class="notif-item unread" tabindex="0" role="button">
+                  <span class="notif-dot"></span><span class="notif-icon">⏰</span>
+                  <div class="notif-body"><div class="notif-title">Follow-up overdue</div><div class="notif-time">3 hours ago</div>
+                    <div class="notif-detail" hidden>Ahsan Raza's follow-up date has passed — reach out today to keep the deal warm.</div></div>
+                </div>
+                <div class="notif-item" tabindex="0" role="button">
+                  <span class="notif-dot"></span><span class="notif-icon">📤</span>
+                  <div class="notif-body"><div class="notif-title">Lead exported</div><div class="notif-time">Yesterday</div>
+                    <div class="notif-detail" hidden>Your full leads list was exported to CSV successfully.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light theme"><span class="knob"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"></path></svg></span></button>
+          <div class="avatar" id="avatarBtn" role="button" tabindex="0" aria-label="Open profile">AM</div>
+        </div>
+      </header>
+
+      <div class="sidebar">
+        <div class="side-brand"><span class="mark">L</span><span>Ledger</span></div>
+        <nav class="side-nav" aria-label="Primary">
+          <a href="#" class="nav-link active" data-view="dashboard"><span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></span><span class="label">Dashboard</span></a>
+          <a href="#" class="nav-link" data-view="leads"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3 20c.5-3.5 2.4-5 6-5s5.5 1.5 6 5"></path><path d="M16 5.5a3 3 0 0 1 0 5.8M18 15c2 .7 3 2 3.5 5"></path></svg></span><span class="label">Leads</span></a>
+          <a href="#" class="nav-link" data-view="pipeline"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="6" r="2"></circle><circle cx="12" cy="18" r="2"></circle><path d="M8 6h8M7.5 7.5l3 8M16.5 7.5l-3 8"></path></svg></span><span class="label">Pipeline</span></a>
+          <a href="#" class="nav-link" data-view="followups"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3 2"></path></svg></span><span class="label">Follow-ups</span><span class="nav-badge" id="navFollowupBadge">0</span></a>
+          <a href="#" class="nav-link" data-view="revenue"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M14.5 9.2c-.6-.7-1.5-1.1-2.6-1.1-1.4 0-2.4.7-2.4 1.8 0 2.8 5.1 1.2 5.1 4 0 1.2-1 2-2.6 2-1.2 0-2.2-.4-2.9-1.2M12 6v12"></path></svg></span><span class="label">Revenue</span></a>
+          <a href="#" class="nav-link" data-view="profile"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"></circle><path d="M5 20c.7-4 2.9-6 7-6s6.3 2 7 6"></path></svg></span><span class="label">Profile</span></a>
+        </nav>
+
+        <div class="today-card" aria-label="Today's overview">
+          <div class="today-title"><span class="today-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h5"></path></svg></span>Today's Overview</div>
+          <div class="today-date">15 May, 2025</div>
+          <div class="today-row"><span>New Leads</span><strong>12</strong></div>
+          <div class="today-row"><span>Follow-ups</span><strong>8</strong></div>
+          <div class="today-row"><span>Closed Deals</span><strong>3</strong></div>
+        </div>
+        <button class="logout-btn" id="logoutBtn" type="button" aria-label="Logout">
+          <span class="logout-icon"><svg viewBox="0 0 24 24"><path d="M10 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h5"></path><path d="M13 8l4 4-4 4M7 12h10"></path></svg></span>
+          <span>Logout</span>
+        </button>
+      </div>
+
+      <main>
+        <div id="view-dashboard" class="view active">
+          <section class="stats-grid" id="dashStats"></section>
+          <div id="followupStripWrap"></div>
+          <section class="panel">
+            <div class="panel-head"><h2>💰 Revenue — <span id="dashRevenueMonthLabel"></span></h2><button class="btn-ghost" data-goto="revenue">View Revenue →</button></div>
+            <div class="stats-grid" id="dashRevenueStats"></div>
+            <div class="table-wrap" style="margin-top:1rem;"><table><thead><tr><th>Lead</th><th>Business</th><th>Closed Date</th><th>Price</th></tr></thead><tbody id="dashRevenueTbody"></tbody></table></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Pipeline Overview</h2><button class="btn-ghost" data-goto="pipeline">View Pipeline →</button></div>
+            <div class="pipeline-wrap" id="dashPipelinePreview"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head" style="color:var(--hot);"><h2 style="color:var(--hot);">🔥 Hot Leads</h2><button class="btn-ghost" data-goto="leads">View All Leads →</button></div>
+            <div class="table-wrap"><table><thead><tr><th>Lead</th><th>Phone</th><th>Price</th><th>Stage</th></tr></thead><tbody id="dashHotTbody"></tbody></table></div>
+          </section>
+        </div>
+
+        <div id="view-leads" class="view">
+          <h2 class="view-title">All Leads</h2>
+          <p class="view-sub">Every contact in your pipeline. Click a row for full details.</p>
+          <div class="filters-bar">
+            <label>Status</label>
+            <select id="filterStatus"><option value="">All</option><option>Hot</option><option>Warm</option><option>Cold</option></select>
+            <label>Stage</label>
+            <select id="filterStage"><option value="">All Stages</option></select>
+            <label>City</label>
+            <select id="filterCity"><option value="">All Cities</option></select>
+            <button class="btn-ghost" id="clearFiltersBtn">Clear</button>
+            <button class="btn-primary" id="exportCsvBtn" style="margin-left:auto;">⬇ Export CSV</button>
+            <button class="btn-primary" id="addLeadBtn">+ Add Lead</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th data-sort="ownerName">Lead</th><th data-sort="dialer">Dialer</th><th>Phone</th>
+                <th data-sort="price">Price</th><th data-sort="status">Status</th><th data-sort="stage">Stage</th><th data-sort="followupDate">Follow-Up</th>
+              </tr></thead>
+              <tbody id="leadsTbody"></tbody>
+            </table>
+            <p class="empty-state" id="leadsEmpty" style="display:none;">No leads found. Adjust filters or add a new lead.</p>
+          </div>
+        </div>
+
+        <div id="view-pipeline" class="view">
+          <h2 class="view-title">Deal Pipeline</h2>
+          <p class="view-sub">Where every lead stands, stage by stage.</p>
+          <div class="pipeline-wrap" id="pipelineBoard"></div>
+        </div>
+
+        <div id="view-followups" class="view">
+          <h2 class="view-title">Follow-ups</h2>
+          <p class="view-sub">Every lead with a scheduled next contact date.</p>
+          <div id="followupStripWrap2"></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Lead</th><th>Business</th><th>Phone</th><th>Next Follow-Up</th><th>Last Contact</th><th>Status</th></tr></thead>
+              <tbody id="followupsTbody"></tbody>
+            </table>
+            <p class="empty-state" id="followupsEmpty" style="display:none;">No follow-ups scheduled.</p>
+          </div>
+        </div>
+
+        <div id="view-revenue" class="view">
+          <h2 class="view-title">Revenue</h2>
+          <p class="view-sub">Closed deals, month by month.</p>
+          <div class="filters-bar" style="justify-content:space-between;">
+            <button class="btn-ghost" id="prevMonthBtn">← Previous Month</button>
+            <div id="revenueMonthLabel" style="font-weight:700; font-family:var(--ff-display);"></div>
+            <button class="btn-ghost" id="nextMonthBtn">Next Month →</button>
+          </div>
+          <section class="stats-grid" id="revenueStats"></section>
+          <section class="panel">
+            <div class="panel-head"><h2 id="revenueTableTitle">Closed Deals</h2></div>
+            <div class="table-wrap"><table><thead><tr><th>Lead</th><th>Business</th><th>Closed Date</th><th>Price</th></tr></thead><tbody id="revenueTbody"></tbody></table></div>
+            <p class="empty-state" id="revenueEmpty" style="display:none;">No deals closed this month.</p>
+          </section>
+        </div>
+
+        <div id="view-profile" class="view">
+          <h2 class="view-title">Profile</h2>
+          <p class="view-sub">Your account details and sales summary.</p>
+          <section class="panel">
+            <div class="profile-hero">
+              <div class="profile-avatar">AM</div>
+              <div><h2>Abdul Moeez</h2><div class="profile-sub">abdul.moeez@example.com</div><span class="profile-badge">⭐ Top Closer</span></div>
+              <button class="edit-profile-btn" id="editProfileBtn" style="margin-left:auto;">Edit Profile</button>
+            </div>
+          </section>
+          <section class="panel">
+            <h2 style="font-family:var(--ff-display); font-size:1.15rem; margin-bottom:.5rem;">Account Details</h2>
+            <div id="profileInfoList">
+              <div class="profile-info-row"><span class="k">Full name</span><span class="v" id="pv-name">Abdul Moeez</span></div>
+              <div class="profile-info-row"><span class="k">Email</span><span class="v" id="pv-email">abdul.moeez@example.com</span></div>
+              <div class="profile-info-row"><span class="k">Phone</span><span class="v" id="pv-phone">+92 300 1234567</span></div>
+              <div class="profile-info-row"><span class="k">Role</span><span class="v" id="pv-team">Closer — Sales</span></div>
+            </div>
+            <form class="profile-edit-fields" id="profileEditForm">
+              <div class="field"><label for="editName">Full name</label><input type="text" id="editName" value="Abdul Moeez"></div>
+              <div class="field"><label for="editEmail">Email</label><input type="email" id="editEmail" value="abdul.moeez@example.com"></div>
+              <div class="field"><label for="editPhone">Phone</label><input type="text" id="editPhone" value="+92 300 1234567"></div>
+              <div class="field"><label for="editTeam">Role</label><input type="text" id="editTeam" value="Closer — Sales"></div>
+              <button type="submit" class="btn-primary" style="align-self:flex-start;">Save Profile</button>
+            </form>
+          </section>
+        </div>
+
+        <footer class="site-footer">Ledger — a Project 1 submission for DecodeLabs Full Stack Internship</footer>
+        <div class="toast" id="toast">Saved</div>
+
+        <div class="modal-overlay" id="detailOverlay" role="dialog" aria-modal="true" aria-labelledby="dhName" aria-hidden="true">
+          <div class="modal-card" style="max-width:520px; padding:0;">
+            <div class="detail-head">
+              <div class="dh-top">
+                <div><div class="dh-name" id="dhName">—</div><div class="dh-biz" id="dhBiz">—</div></div>
+                <button class="modal-close" id="detailClose" aria-label="Close">✕</button>
+              </div>
+              <div class="dh-badges"><span class="badge" id="dhStatusBadge"></span><span class="badge-stage" id="dhStageBadge"></span></div>
+            </div>
+            <div class="detail-body">
+              <div class="detail-section">
+                <div class="detail-section-title">Contact</div>
+                <div class="detail-row"><span class="dr-label">Owner</span><span class="dr-val" id="dOwner"></span></div>
+                <div class="detail-row"><span class="dr-label">Phone</span><span class="dr-val" id="dPhone"></span></div>
+                <div class="detail-row"><span class="dr-label">Email</span><span class="dr-val" id="dEmail"></span></div>
+                <div class="detail-row"><span class="dr-label">City</span><span class="dr-val" id="dCity"></span></div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">Deal</div>
+                <div class="detail-row"><span class="dr-label">Dialer</span><span class="dr-val" id="dDialer"></span></div>
+                <div class="detail-row"><span class="dr-label">Industry</span><span class="dr-val" id="dIndustry"></span></div>
+                <div class="detail-row"><span class="dr-label">Services</span><span class="dr-val" id="dServices"></span></div>
+                <div class="detail-row"><span class="dr-label">Price</span><span class="dr-val" id="dPrice"></span></div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">Links</div>
+                <div class="detail-row"><span class="dr-label">Yelp</span><span class="dr-val" id="dYelp"></span></div>
+                <div class="detail-row"><span class="dr-label">GMB</span><span class="dr-val" id="dGmb"></span></div>
+                <div class="detail-row"><span class="dr-label">Website</span><span class="dr-val" id="dWebsite"></span></div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">Timeline</div>
+                <div class="detail-row"><span class="dr-label">Next Follow-Up</span><span class="dr-val" id="dFollowup"></span></div>
+                <div class="detail-row"><span class="dr-label">Last Contact</span><span class="dr-val" id="dLastContact"></span></div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">Notes</div>
+                <div class="detail-row"><span class="dr-val" id="dNotes" style="font-style:italic;color:var(--text-dim);"></span></div>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn-primary flex-1" id="detailEditBtn">Edit</button>
+              <button class="btn-ghost" id="detailWonBtn">Mark Won</button>
+              <button class="btn-danger" id="detailDeleteBtn">Delete</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-overlay" id="leadFormModal" role="dialog" aria-modal="true" aria-labelledby="leadFormTitle" aria-hidden="true">
+          <div class="modal-card" style="max-width:480px;">
+            <button class="modal-close" id="leadFormClose" aria-label="Close">✕</button>
+            <h2 id="leadFormTitle">Add Lead</h2>
+            <form id="leadForm">
+              <div class="section-label">Contact</div>
+              <div class="form-grid">
+                <div class="field"><label for="f-dialer">Dialer Name *</label><input type="text" id="f-dialer" required></div>
+                <div class="field"><label for="f-owner">Owner Name</label><input type="text" id="f-owner"></div>
+                <div class="field"><label for="f-bizname">Business Name *</label><input type="text" id="f-bizname" required></div>
+                <div class="field"><label for="f-city">City</label><input type="text" id="f-city"></div>
+                <div class="field"><label for="f-phone1">Primary Phone *</label><input type="text" id="f-phone1" required></div>
+                <div class="field"><label for="f-email1">Primary Email *</label><input type="email" id="f-email1" required></div>
+              </div>
+              <div class="section-label">Deal</div>
+              <div class="form-grid">
+                <div class="field"><label for="f-industry">Industry</label><input type="text" id="f-industry"></div>
+                <div class="field"><label for="f-price">Price ($)</label><input type="number" id="f-price" min="0"></div>
+                <div class="field full"><label for="f-services">Services</label><input type="text" id="f-services"></div>
+                <div class="field"><label for="f-status">Status</label><select id="f-status"><option>Cold</option><option>Warm</option><option>Hot</option></select></div>
+                <div class="field"><label for="f-stage">Stage</label><select id="f-stage"><option>New Lead</option><option>Contacted</option><option>Follow-Up</option><option>Interested</option><option>Closed Won</option><option>Closed Lost</option></select></div>
+              </div>
+              <div class="section-label">Links</div>
+              <div class="form-grid">
+                <div class="field"><label for="f-yelp">Yelp URL</label><input type="text" id="f-yelp"></div>
+                <div class="field"><label for="f-gmb">GMB URL</label><input type="text" id="f-gmb"></div>
+                <div class="field full"><label for="f-website">Website URL</label><input type="text" id="f-website"></div>
+              </div>
+              <div class="section-label">Timeline</div>
+              <div class="form-grid">
+                <div class="field"><label for="f-followup-date">Next Follow-Up Date</label><input type="date" id="f-followup-date"></div>
+                <div class="field"><label for="f-last-contact">Last Contact Date</label><input type="date" id="f-last-contact"></div>
+                <div class="field full"><label for="f-notes">Notes</label><textarea id="f-notes"></textarea></div>
+              </div>
+              <div class="modal-foot">
+                <button type="button" class="btn-ghost" id="leadFormCancel">Cancel</button>
+                <button type="submit" class="btn-primary">Save Lead</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="modal-overlay" id="notifModal" role="dialog" aria-modal="true" aria-labelledby="notifModalTitle" aria-hidden="true">
+          <div class="modal-card" style="max-width:400px;">
+            <button class="modal-close" id="notifModalClose" aria-label="Close">✕</button>
+            <div class="notif-modal-icon" id="notifModalIcon">🔥</div>
+            <div class="notif-modal-title" id="notifModalTitle"></div>
+            <div class="notif-modal-time" id="notifModalTime"></div>
+            <p class="notif-modal-text" id="notifModalText"></p>
+            <div class="modal-foot"><button class="btn-ghost flex-1" id="notifModalOk">Close</button></div>
+          </div>
+        </div>
+
+        <div class="modal-overlay" id="listModal" role="dialog" aria-modal="true" aria-labelledby="listModalTitle" aria-hidden="true">
+          <div class="modal-card" style="max-width:480px;">
+            <button class="modal-close" id="listModalClose" aria-label="Close">✕</button>
+            <h2 id="listModalTitle">Leads</h2>
+            <div id="listModalBody" style="display:flex;flex-direction:column;gap:.5rem;max-height:60vh;overflow-y:auto;margin-top:.8rem;"></div>
+          </div>
+        </div>
+
+        <div class="modal-overlay" id="logoutConfirmModal" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle" aria-hidden="true">
+          <div class="modal-card" style="max-width:360px;">
+            <button class="modal-close" id="logoutConfirmClose" aria-label="Close">✕</button>
+            <h2 id="logoutConfirmTitle">Log out?</h2>
+            <p style="font-size:.88rem;color:var(--text-dim);margin-top:.4rem;">You'll need to sign back in to access your leads.</p>
+            <div class="modal-foot">
+              <button type="button" class="btn-ghost" id="logoutCancelBtn">Cancel</button>
+              <button type="button" class="btn-danger" id="logoutConfirmBtn">Logout</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="./js/script.js"></script>
+  </body>
+</html>
