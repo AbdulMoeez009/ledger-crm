@@ -10,7 +10,7 @@ A full-stack CRM dashboard with an Express REST API and SQLite persistence. Lead
   - `script.js` — main app bootstrap and rendering
   - `state.js` — lead data, filters, formatting helpers, and CSV export logic
   - `navigation.js` — view switching and global search events
-  - `theme.js` — dark/light theme behavior
+  - `theme.js` — dark theme initialization
   - `notifications.js` — notification panel and modal behavior
   - `profile.js` — profile panel interactions
   - `settings.js` — settings modal behavior
@@ -55,4 +55,5 @@ For `5500`, run VS Code Live Server on `index.html`. The frontend automatically 
 
 - The app is intentionally served via HTTP so browser module loading works correctly.
 - The design was preserved from the original dashboard while improving maintainability and accessibility.
-- The project keeps the same interactive flows: navigation, filtering, lead forms, revenue views, theme toggle, notifications, and modal dialogs.
+- The project keeps the same interactive flows: navigation, filtering, lead forms, revenue views, notifications, and modal dialogs.
+- The dashboard uses a single dark Obsidian Gold theme.
