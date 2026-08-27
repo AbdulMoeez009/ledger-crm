@@ -12,6 +12,7 @@
 html[data-theme="dark"]{
   --bg:#080B0F; --surface:#11151A; --surface-2:#181D23; --border:#29313A;
   --text:#F3F4F6; --text-dim:#89929D; --shadow:0 8px 30px rgba(0,0,0,0.5);
+  color-scheme:dark;
 }
 
 html[data-theme="light"]{
