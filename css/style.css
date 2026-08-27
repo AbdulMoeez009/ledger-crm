@@ -16,8 +16,9 @@ html[data-theme="dark"]{
 }
 
 html[data-theme="light"]{
-  --bg:#FAF6EE; --surface:#FFFFFF; --surface-2:#F3ECDC; --border:#E5D9BE;
-  --text:#241D12; --text-dim:#7A6B4E; --shadow:0 8px 24px rgba(107,66,38,0.12);
+  --bg:#080B0F; --surface:#11151A; --surface-2:#181D23; --border:#29313A;
+  --text:#F3F4F6; --text-dim:#89929D; --shadow:0 8px 30px rgba(0,0,0,0.5);
+  color-scheme:dark;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
