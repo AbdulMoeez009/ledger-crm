@@ -100,6 +100,10 @@ function ensureDialerId(name) {
   return dialerIdByName.get(String(name).trim()).id;
 }
 
+function isUniqueConstraint(error) {
+  return String(error.code || '').includes('CONSTRAINT_UNIQUE') || String(error.message || '').includes('UNIQUE constraint failed');
+}
+
 app.get('/api/health', (req, res) => res.json({ status: 'ok', database: 'sqlite' }));
 app.get('/api/leads', (req, res) => res.json(readLeads.all()));
 
@@ -111,7 +115,7 @@ app.post('/api/leads', (req, res) => {
     const result = database.prepare(`INSERT INTO leads (${fields.join(', ')}, dialer_id) VALUES (${fields.map(() => '?').join(', ')}, ?)`).run(...values, ensureDialerId(req.body.dialer));
     return res.status(201).json(readLead.get(result.lastInsertRowid));
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') return res.status(409).json({ error: 'email1 must be unique' });
+    if (isUniqueConstraint(error)) return res.status(409).json({ error: 'email1 must be unique' });
     return res.status(400).json({ error: 'Lead could not be created' });
   }
 });
@@ -127,7 +131,7 @@ app.put('/api/leads/:id', (req, res) => {
     if (!result.changes) return res.status(404).json({ error: 'Lead not found' });
     return res.json(readLead.get(id));
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') return res.status(409).json({ error: 'email1 must be unique' });
+    if (isUniqueConstraint(error)) return res.status(409).json({ error: 'email1 must be unique' });
     return res.status(400).json({ error: 'Lead could not be replaced' });
   }
 });
@@ -150,7 +154,7 @@ app.patch('/api/leads/:id', (req, res) => {
     if (!result.changes) return res.status(404).json({ error: 'Lead not found' });
     return res.json(readLead.get(id));
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') return res.status(409).json({ error: 'email1 must be unique' });
+    if (isUniqueConstraint(error)) return res.status(409).json({ error: 'email1 must be unique' });
     return res.status(400).json({ error: 'Lead could not be updated' });
   }
 });
