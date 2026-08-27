@@ -7,6 +7,7 @@ import { initNotifications } from './notifications.js';
 import { initProfile } from './profile.js';
 import { initSettings } from './settings.js';
 import { initShortcuts } from './shortcuts.js';
+import { api } from './api.js';
 
 let searchQuery = '';
 let sortKey = null;
@@ -406,25 +407,34 @@ function closeLeadForm() {
 
 if (qs('#detailClose')) qs('#detailClose').addEventListener('click', closeDetail);
 if (qs('#detailWonBtn')) {
-  qs('#detailWonBtn').addEventListener('click', () => {
+  qs('#detailWonBtn').addEventListener('click', async () => {
     const lead = state.leads.find((item) => item.id === activeLeadId);
     if (!lead) return;
-    lead.stage = 'Closed Won';
-    lead.closedDate = today();
-    closeDetail();
-    renderAll();
-    showToast(`${lead.ownerName} marked as Closed Won`);
+    try {
+      const updated = await api.updateLead(lead.id, { stage: 'Closed Won', closedDate: today() });
+      state.leads = state.leads.map((item) => item.id === updated.id ? updated : item);
+      closeDetail();
+      renderAll();
+      showToast(`${lead.ownerName} marked as Closed Won`);
+    } catch (error) {
+      showToast(error.message, 'error');
+    }
   });
 }
 if (qs('#detailDeleteBtn')) {
-  qs('#detailDeleteBtn').addEventListener('click', () => {
+  qs('#detailDeleteBtn').addEventListener('click', async () => {
     const lead = state.leads.find((item) => item.id === activeLeadId);
     if (!lead) return;
     if (!window.confirm(`Delete ${lead.ownerName} (${lead.bizName})? This cannot be undone.`)) return;
-    state.leads = state.leads.filter((item) => item.id !== activeLeadId);
-    closeDetail();
-    renderAll();
-    showToast(`${lead.ownerName} deleted`, 'error');
+    try {
+      await api.deleteLead(activeLeadId);
+      state.leads = state.leads.filter((item) => item.id !== activeLeadId);
+      closeDetail();
+      renderAll();
+      showToast(`${lead.ownerName} deleted`, 'error');
+    } catch (error) {
+      showToast(error.message, 'error');
+    }
   });
 }
 if (qs('#detailEditBtn')) qs('#detailEditBtn').addEventListener('click', () => { closeDetail(); openLeadForm(activeLeadId); });
@@ -432,7 +442,7 @@ if (qs('#leadFormClose')) qs('#leadFormClose').addEventListener('click', closeLe
 if (qs('#leadFormCancel')) qs('#leadFormCancel').addEventListener('click', closeLeadForm);
 if (qs('#leadFormModal')) qs('#leadFormModal').addEventListener('click', (event) => { if (event.target === qs('#leadFormModal')) closeLeadForm(); });
 
-qs('#leadForm')?.addEventListener('submit', (event) => {
+qs('#leadForm')?.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const dialer = qs('#f-dialer').value.trim();
@@ -470,17 +480,27 @@ qs('#leadForm')?.addEventListener('submit', (event) => {
   };
 
   if (editingId) {
-    const index = state.leads.findIndex((lead) => lead.id === editingId);
-    const existing = state.leads[index];
+    const existing = state.leads.find((lead) => lead.id === editingId);
     if (payload.stage === 'Closed Won' && existing.stage !== 'Closed Won') payload.closedDate = today();
     else if (payload.stage !== 'Closed Won') payload.closedDate = '';
-    state.leads[index] = { ...existing, ...payload };
-    showToast('Lead updated!');
+    try {
+      const updated = await api.updateLead(editingId, payload);
+      state.leads = state.leads.map((lead) => lead.id === updated.id ? updated : lead);
+      showToast('Lead updated!');
+    } catch (error) {
+      showToast(error.message, 'error');
+      return;
+    }
   } else {
-    payload.id = state.nextId++;
     if (payload.stage === 'Closed Won') payload.closedDate = today();
-    state.leads.push(payload);
-    showToast('Lead added!');
+    try {
+      const created = await api.createLead(payload);
+      state.leads.push(created);
+      showToast('Lead added!');
+    } catch (error) {
+      showToast(error.message, 'error');
+      return;
+    }
   }
 
   closeLeadForm();
@@ -495,7 +515,7 @@ window.openLeadsListModal = openLeadsListModal;
 window.closeListModal = closeListModal;
 window.switchView = switchView;
 
-function initializeApp() {
+async function initializeApp() {
   initTheme();
   bindNavigation();
   initNotifications();
@@ -537,6 +557,11 @@ function initializeApp() {
     renderAll({ searchQuery: event.detail?.searchQuery ?? searchQuery });
   });
 
+  try {
+    state.leads = await api.listLeads();
+  } catch (error) {
+    showToast(`Could not load leads: ${error.message}`, 'error');
+  }
   renderAll();
 }
 

@@ -40,6 +40,7 @@ button { font-family:inherit; cursor:pointer; border:none; background:none; colo
 }
 @media (min-width:1024px) {
   .app { grid-template-columns:250px 1fr; }
+  .sidebar { width:250px; }
 }
 
 header.topbar {
@@ -75,10 +76,15 @@ html[data-theme="light"] .theme-toggle .knob { transform:translateX(24px); }
   grid-area:nav; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:row; align-items:center; justify-content:space-around;
   padding:.6rem; position:sticky; bottom:0; z-index:10; order:2;
 }
+.side-brand { display:flex; align-items:center; gap:.65rem; padding:.15rem .55rem 1.35rem; font-family:var(--ff-display); font-size:1.35rem; font-weight:600; color:var(--text); }
+.side-brand .mark { width:36px; height:36px; border-radius:9px; background:linear-gradient(135deg,var(--gold-bright),var(--gold)); display:grid; place-items:center; color:#0B0A08; font-family:var(--ff-body); font-weight:800; }
 @media (min-width:768px) {
-  .sidebar { flex-direction:column; justify-content:flex-start; align-items:stretch; padding:1.5rem .75rem; gap:.4rem; order:0; }
+  .sidebar { flex-direction:column; justify-content:flex-start; align-items:stretch; padding:1.5rem .75rem; gap:.4rem; order:0; position:fixed; top:0; bottom:0; left:0; width:88px; height:100vh; overflow:hidden; }
 }
-.side-nav { display:flex; flex-direction:row; align-items:center; justify-content:space-around; flex:1; }
+@media (min-width:1024px) {
+  .sidebar { width:250px; }
+}
+.side-nav { display:flex; flex-direction:row; align-items:center; justify-content:flex-start; flex:0 0 auto; }
 @media (min-width:768px) {
   .side-nav { flex-direction:column; align-items:stretch; gap:.4rem; }
 }
@@ -94,13 +100,23 @@ html[data-theme="light"] .theme-toggle .knob { transform:translateX(24px); }
   .nav-link span.label { display:inline; }
 }
 .nav-link:hover, .nav-link.active { background:var(--surface-2); color:var(--gold-bright); }
-.nav-link .icon { font-size:1.1rem; }
+.nav-link .icon { display:grid; place-items:center; width:22px; height:22px; font-size:1.1rem; }
+.nav-link svg, .header-icon svg, .today-icon svg, .logout-icon svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
 .nav-badge {
   background:var(--hot); color:#fff; font-size:.62rem; font-weight:700; min-width:15px; height:15px; border-radius:999px;
   display:grid; place-items:center; padding:0 3px; position:absolute; top:2px; right:10px;
 }
 @media (min-width:768px) { .nav-badge { position:static; margin-left:auto; } }
 .nav-badge.hidden { display:none; }
+.today-card { margin-top:auto; padding:.9rem; border:1px solid var(--border); border-radius:12px; background:var(--surface-2); }
+.today-title { display:flex; align-items:center; gap:.45rem; font-size:.78rem; font-weight:700; color:var(--gold-bright); }
+.today-icon { display:grid; place-items:center; }
+.today-date { margin:.35rem 0 .75rem; color:var(--text-dim); font-size:.72rem; }
+.today-row { display:flex; justify-content:space-between; gap:.5rem; padding:.32rem 0; border-top:1px solid var(--border); font-size:.75rem; }
+.today-row strong { color:var(--text); }
+.logout-btn { display:flex; align-items:center; gap:.7rem; padding:.75rem .8rem; margin-top:.8rem; border-radius:10px; color:var(--text-dim); font-size:.85rem; }
+.logout-btn:hover { color:var(--hot); background:var(--surface-2); }
+.logout-icon { display:grid; place-items:center; }
 
 main {
   grid-area:main; padding:clamp(1rem,3vw,2.5rem); display:flex; flex-direction:column; gap:clamp(1.25rem,3vw,2rem); min-width:0; overflow-x:hidden;
@@ -311,8 +327,8 @@ tbody tr.hidden-row { display:none; }
 footer.site-footer { text-align:center; padding:1.5rem; color:var(--text-dim); font-size:.78rem; border-top:1px solid var(--border); margin-top:1rem; }
 
 @media(max-width:1200px){ .stats-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } .pipeline-wrap{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
-@media(max-width:900px){ .app{ grid-template-columns:82px 1fr; } .brand{ display:none; } .nav-link{ justify-content:center; } .nav-link .label{ display:none; } .nav-badge{ position:absolute; top:4px; right:10px; } .pipeline-wrap{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:700px){ .app{ grid-template-columns:1fr; grid-template-rows:64px auto 1fr; grid-template-areas:"header" "nav" "main"; } .sidebar{ position:sticky!important; width:auto!important; height:auto!important; flex-direction:row!important; overflow-x:auto; padding:8px!important; } .side-brand,.today-card,.logout-btn{ display:none; } .side-nav{ flex-direction:row; min-width:max-content; } .nav-link{ padding:8px 12px; } .nav-link .label{ display:inline; font-size:.72rem; } .stats-grid{ grid-template-columns:1fr 1fr; } main{ padding:16px; } .pipeline-wrap{ grid-template-columns:1fr 1fr; }}
+@media(min-width:768px) and (max-width:1023px){ .app{ grid-template-columns:82px 1fr; } .side-brand{ display:none; } .nav-link{ justify-content:center; } .nav-link .label{ display:none; } .nav-badge{ position:absolute; top:4px; right:10px; } .pipeline-wrap{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:767px){ .app{ grid-template-columns:1fr; grid-template-rows:64px auto 1fr; grid-template-areas:"header" "nav" "main"; } .sidebar{ position:sticky!important; width:auto!important; height:auto!important; flex-direction:row!important; overflow-x:auto; padding:8px!important; } .side-brand,.today-card,.logout-btn{ display:none; } .side-nav{ flex-direction:row; min-width:max-content; } .nav-link{ padding:8px 12px; } .nav-link .label{ display:inline; font-size:.72rem; } .stats-grid{ grid-template-columns:1fr 1fr; } main{ padding:16px; } .pipeline-wrap{ grid-template-columns:1fr 1fr; }}
 @media(max-width:520px){ .stats-grid{ grid-template-columns:1fr; } .pipeline-wrap{ grid-template-columns:1fr; } .theme-toggle{ display:none; } .topbar{ padding:0 12px!important; } .search{ height:40px; } }
 
 #detailOverlay[aria-hidden="true"], #leadFormModal[aria-hidden="true"], #notifModal[aria-hidden="true"], #listModal[aria-hidden="true"], #logoutConfirmModal[aria-hidden="true"] { display:none; }
