@@ -1,7 +1,6 @@
 import { qs, qsa } from './dom.js';
 import { state, STAGES, fmtPrice, today, daysUntil, fmtDate, statusClass, stageClass, matchesSearch, inMonth, monthLabel, exportCsv } from './state.js';
 import { showToast } from './toast.js';
-import { initTheme } from './theme.js';
 import { bindNavigation, switchView, updateNavBadge } from './navigation.js';
 import { initNotifications } from './notifications.js';
 import { initProfile } from './profile.js';
@@ -527,7 +526,6 @@ window.closeListModal = closeListModal;
 window.switchView = switchView;
 
 async function initializeApp() {
-  initTheme();
   bindNavigation();
   initNotifications();
   initProfile();
