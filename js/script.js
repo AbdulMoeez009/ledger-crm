@@ -76,6 +76,17 @@ function renderDashboard() {
 
   qs('#followupStripWrap').innerHTML = followupStripHtml();
 
+  const upcoming = state.leads
+    .filter((lead) => lead.followupDate)
+    .sort((a, b) => a.followupDate.localeCompare(b.followupDate))
+    .slice(0, 5);
+  qs('#dashFollowupsList').innerHTML = upcoming.map((lead) => {
+    const diff = daysUntil(lead.followupDate);
+    const label = diff < 0 ? `${-diff}d overdue` : diff === 0 ? 'Due today' : `in ${diff}d`;
+    return `<button class="followup-row" data-lead="${lead.id}"><span class="followup-avatar">${lead.ownerName.split(' ').map((part) => part[0]).join('').slice(0, 2)}</span><span class="followup-person"><strong>${lead.ownerName}</strong><small>${lead.bizName}</small></span><span class="followup-time">${fmtDate(lead.followupDate)}</span><span class="followup-status ${diff <= 0 ? 'is-due' : ''}">${label}</span></button>`;
+  }).join('') || '<div class="empty-state">No follow-ups scheduled.</div>';
+  qsa('#dashFollowupsList .followup-row').forEach((row) => row.addEventListener('click', () => openDetail(row.dataset.lead)));
+
   const board = qs('#dashPipelinePreview');
   board.innerHTML = STAGES.map((stage) => {
     const stageLeads = state.leads.filter((lead) => lead.stage === stage && matchesSearch(lead, searchQuery));

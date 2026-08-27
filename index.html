@@ -80,18 +80,26 @@
 
       <main>
         <div id="view-dashboard" class="view active">
+          <div class="dashboard-intro">
+            <div><div class="eyebrow">Sales workspace</div><h1>Good morning, Abdul <span aria-hidden="true">👋</span></h1><p>Here is your sales overview for today.</p></div>
+            <div class="dashboard-date">15 May, 2025</div>
+          </div>
           <section class="stats-grid" id="dashStats"></section>
           <div id="followupStripWrap"></div>
-          <section class="panel">
+          <section class="panel dash-revenue">
             <div class="panel-head"><h2>💰 Revenue — <span id="dashRevenueMonthLabel"></span></h2><button class="btn-ghost" data-goto="revenue">View Revenue →</button></div>
             <div class="stats-grid" id="dashRevenueStats"></div>
             <div class="table-wrap" style="margin-top:1rem;"><table><thead><tr><th>Lead</th><th>Business</th><th>Closed Date</th><th>Price</th></tr></thead><tbody id="dashRevenueTbody"></tbody></table></div>
           </section>
-          <section class="panel">
+          <section class="panel dash-pipeline">
             <div class="panel-head"><h2>Pipeline Overview</h2><button class="btn-ghost" data-goto="pipeline">View Pipeline →</button></div>
             <div class="pipeline-wrap" id="dashPipelinePreview"></div>
           </section>
-          <section class="panel">
+          <section class="panel dash-followups">
+            <div class="panel-head"><h2>Follow-ups</h2><button class="btn-ghost" data-goto="followups">View All →</button></div>
+            <div class="followup-list" id="dashFollowupsList"></div>
+          </section>
+          <section class="panel dash-hot">
             <div class="panel-head" style="color:var(--hot);"><h2 style="color:var(--hot);">🔥 Hot Leads</h2><button class="btn-ghost" data-goto="leads">View All Leads →</button></div>
             <div class="table-wrap"><table><thead><tr><th>Lead</th><th>Phone</th><th>Price</th><th>Stage</th></tr></thead><tbody id="dashHotTbody"></tbody></table></div>
           </section>
